@@ -1,0 +1,18 @@
+universe = vanilla
+executable = metagenomic_filtering_brownData_condor.pl
+arguments = "ERR867541.realn.bam"
+
+output = Stats.sync
+error = Stats.err
+log = Stats.log
+
+transfer_executable = TRUE
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = ERR867541.realn.bam
+
+request_cpus = 8
+request_memory = 2GB
+request_disk = 2GB
+
+queue
