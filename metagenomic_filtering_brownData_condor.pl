@@ -6,7 +6,8 @@
 use strict;
 use File::Basename;
 
-my $sam = "/opt/PepPrograms/samtools-1.2/samtools";
+my $progDir = "/mnt/PepPop_export/PepPrograms";
+my $sam = "${progDir}/samtools-1.2/samtools";
 
 my @files = @ARGV; #list of bam files
 open (STATS, ">>", "kraken_stats.txt") or die "couldn't open file for stats output: $?\n";
@@ -29,12 +30,12 @@ foreach my $file (@files) {
 #call kraken on fastqs
 	
 	#use below if inputting compressed fq
-	#system "/opt/PepPrograms/kraken/kraken -preload --threads 8 --fastq-input --gzip-compressed --db /opt/PepPrograms/kraken/DB/ ${fqOut}.gz > ${sample}.kraken";
+	#system "${progDir}/kraken/kraken -preload --threads 8 --fastq-input --gzip-compressed --db ${progDir}/kraken/DB/ ${fqOut}.gz > ${sample}.kraken";
 	print STDERR "Processing $sample [kraken]...\n";
-	system "/opt/PepPrograms/kraken/kraken --threads 8 --fastq-input --db /mnt/ramdisk/DB ${fqOut} > ${sample}.kraken";
+	system "${progDir}/kraken/kraken --threads 8 --fastq-input --db /mnt/ramdisk/DB ${fqOut} > ${sample}.kraken";
 #translate kraken file
 	print STDERR "Processing $sample [kraken translate]...\n";
-	system "/opt/PepPrograms/kraken/kraken-translate --db /mnt/ramdisk/DB/ ${sample}.kraken > ${sample}.kraken.labels";
+	system "${progDir}/kraken/kraken-translate --db /mnt/ramdisk/DB/ ${sample}.kraken > ${sample}.kraken.labels";
 
 #work on .kraken files
 	open (IN, "<", "${sample}.kraken") or die "couldn't open $file: $?\n";
@@ -111,15 +112,15 @@ foreach my $file (@files) {
 
 #now filter the original bam file by sequence names
 	print STDERR "Processing $sample [Picard FilterSamReads]...\n";
-	system "java -Xmx8g -jar /opt/PepPrograms/picard-tools-1.138/picard.jar FilterSamReads INPUT=${sample}.realn.bam OUTPUT=$outBam READ_LIST_FILE=${sample}_MTBC_seqNames.txt FILTER=includeReadList";
+	system "java -Xmx8g -jar ${progDir}/picard-tools-1.138/picard.jar FilterSamReads INPUT=${sample}.realn.bam OUTPUT=$outBam READ_LIST_FILE=${sample}_MTBC_seqNames.txt FILTER=includeReadList";
 
 #now convert filtered bam to mpileup and do some further filtering on the mpileup
 	print STDERR "Processing $sample [mpileup generation and filtering]...\n";
 	#open (INBAM, "<", "${sample}_MTBCseqs.bam") or die "couldn't open BAM to generate mpileup: $?\n";
 	system "$sam mpileup -B -Q 20 -f /opt/data/mtuberculosis/MtbNCBIH37Rv.fa ${sample}_MTBCseqs.bam > ${sample}_Mycobacteriumseqs.mpileup";
-	system "perl /opt/PepPrograms/popoolation_1.2.2/basic-pipeline/identify-genomic-indel-regions.pl --input ${sample}_Mycobacteriumseqs.mpileup --output ${sample}_Mycobacteriumseqs_indelregs.gtf";
-	system "perl /opt/PepPrograms/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input ${sample}_Mycobacteriumseqs.mpileup --gtf ${sample}_Mycobacteriumseqs_indelregs.gtf --output ${sample}_Mycobacteriumseqs_noIndel.mpileup";
-	system "perl /opt/PepPrograms/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input ${sample}_Mycobacteriumseqs_noIndel.mpileup --gtf /opt/data/mtuberculosis/150423_removeRegions.gtf --output ${sample}_Mycobacteriumseqs_noIndel_remRegs.mpileup";
+	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/identify-genomic-indel-regions.pl --input ${sample}_Mycobacteriumseqs.mpileup --output ${sample}_Mycobacteriumseqs_indelregs.gtf";
+	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input ${sample}_Mycobacteriumseqs.mpileup --gtf ${sample}_Mycobacteriumseqs_indelregs.gtf --output ${sample}_Mycobacteriumseqs_noIndel.mpileup";
+	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input ${sample}_Mycobacteriumseqs_noIndel.mpileup --gtf /opt/data/mtuberculosis/150423_removeRegions.gtf --output ${sample}_Mycobacteriumseqs_noIndel_remRegs.mpileup";
 #remove all but the final mpileup (.noIndel.remRegs.mpileup)
 	unlink "${sample}_Mycobacteriumseqs.mpileup";
 	unlink "${sample}_Mycobacteriumseqs_noIndel.mpileup";
