@@ -7,6 +7,7 @@ use strict;
 use File::Basename;
 
 my $progDir = "/mnt/PepPop_export/PepPrograms";
+my $dataDir = "/mnt/PepPop_export/data";
 my $sam = "${progDir}/samtools-1.2/samtools";
 
 my @files = @ARGV; #list of bam files
@@ -117,10 +118,10 @@ foreach my $file (@files) {
 #now convert filtered bam to mpileup and do some further filtering on the mpileup
 	print STDERR "Processing $sample [mpileup generation and filtering]...\n";
 	#open (INBAM, "<", "${sample}_MTBCseqs.bam") or die "couldn't open BAM to generate mpileup: $?\n";
-	system "$sam mpileup -B -Q 20 -f /opt/data/mtuberculosis/MtbNCBIH37Rv.fa ${sample}_MTBCseqs.bam > ${sample}_Mycobacteriumseqs.mpileup";
+	system "$sam mpileup -B -Q 20 -f ${dataDir}/mtuberculosis/MtbNCBIH37Rv.fa ${sample}_MTBCseqs.bam > ${sample}_Mycobacteriumseqs.mpileup";
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/identify-genomic-indel-regions.pl --input ${sample}_Mycobacteriumseqs.mpileup --output ${sample}_Mycobacteriumseqs_indelregs.gtf";
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input ${sample}_Mycobacteriumseqs.mpileup --gtf ${sample}_Mycobacteriumseqs_indelregs.gtf --output ${sample}_Mycobacteriumseqs_noIndel.mpileup";
-	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input ${sample}_Mycobacteriumseqs_noIndel.mpileup --gtf /opt/data/mtuberculosis/150423_removeRegions.gtf --output ${sample}_Mycobacteriumseqs_noIndel_remRegs.mpileup";
+	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input ${sample}_Mycobacteriumseqs_noIndel.mpileup --gtf ${dataDir}/mtuberculosis/150423_removeRegions.gtf --output ${sample}_Mycobacteriumseqs_noIndel_remRegs.mpileup";
 #remove all but the final mpileup (.noIndel.remRegs.mpileup)
 	unlink "${sample}_Mycobacteriumseqs.mpileup";
 	unlink "${sample}_Mycobacteriumseqs_noIndel.mpileup";
@@ -129,7 +130,7 @@ foreach my $file (@files) {
 
 #strand bias filter
 	print STDERR "Processing $sample [generateing VCF]...\n";
-	system "$sam mpileup -B -Q 20 -f /opt/data/mtuberculosis/MtbNCBIH37Rv.fa -uv -t DP,DP4,SP $outBam > $outVCF";
+	system "$sam mpileup -B -Q 20 -f ${dataDir}/mtuberculosis/MtbNCBIH37Rv.fa -uv -t DP,DP4,SP $outBam > $outVCF";
 	print STDERR "Processing $sample [strand bias filter]...\n";
 	open (VCF, "<", "$outVCF") or die "couldn't open $outVCF: $?\n";
 	#open (SBOUT, ">", "${sample}_SB_positions.txt") or die "couldn't open output file for strand bias positions: $?\n";
