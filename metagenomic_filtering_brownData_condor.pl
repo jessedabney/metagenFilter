@@ -158,7 +158,7 @@ foreach my $file (@files) {
     open (MPOUT, ">>", "$mpileup4") or die "couldn't open file for strand bias output: $?\n";
     while (my $line = <MPILEUP>) {
     	my $position = (split /\t/, $line)[1];
-    	if (-e $SBpos{$position}) {
+    	if ($SBpos{$position}) {
     		next;
     	} else {
     		print MPOUT "$line"
