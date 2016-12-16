@@ -21,8 +21,13 @@ foreach my $file (@files) {
 	#print STDERR "$name\n";
 	my ($sample, $temp1, $temp2) = split /\./, $name;
 	my $fqOut = "${sample}.realn.fastq";
-	my $outBam = "${sample}_assignedSeqs.bam";
+	my $filteredBam = "${sample}_classSeqs.bam";
 	my $outVCF = "${sample}.vcf";
+	my $mpileup1 = "${sample}_classSeqs.mpileup";
+	my $indelGTF = "${sample}_indelRegs.gtf";
+	my $mpileup2 = "${sample}_classSeqs_noIndel.mpileup";
+	my $mpileup3 = "${sample}_classSeqs_noIndel_remRegs.mpileup";
+	my $mpileup4 = "${sample}_classSeqs_noIndel_remRegs_noSB.mpileup";
 
 	print STDERR "Processing $sample [bam2fq]...\n";
 	system "$sam bam2fq $file > $fqOut";
@@ -113,24 +118,24 @@ foreach my $file (@files) {
 
 #now filter the original bam file by sequence names
 	print STDERR "Processing $sample [Picard FilterSamReads]...\n";
-	system "java -Xmx8g -jar ${progDir}/picard-tools-1.138/picard.jar FilterSamReads INPUT=${sample}.realn.bam OUTPUT=$outBam READ_LIST_FILE=${sample}_MTBC_seqNames.txt FILTER=includeReadList";
+	system "java -Xmx8g -jar ${progDir}/picard-tools-1.138/picard.jar FilterSamReads INPUT=${sample}.realn.bam OUTPUT=$filteredBam READ_LIST_FILE=${sample}_MTBC_seqNames.txt FILTER=includeReadList";
 
 #now convert filtered bam to mpileup and do some further filtering on the mpileup
 	print STDERR "Processing $sample [mpileup generation and filtering]...\n";
 	#open (INBAM, "<", "${sample}_MTBCseqs.bam") or die "couldn't open BAM to generate mpileup: $?\n";
-	system "$sam mpileup -B -Q 20 -f ${dataDir}/mtuberculosis/MtbNCBIH37Rv.fa ${sample}_MTBCseqs.bam > ${sample}_Mycobacteriumseqs.mpileup";
-	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/identify-genomic-indel-regions.pl --input ${sample}_Mycobacteriumseqs.mpileup --output ${sample}_Mycobacteriumseqs_indelregs.gtf";
-	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input ${sample}_Mycobacteriumseqs.mpileup --gtf ${sample}_Mycobacteriumseqs_indelregs.gtf --output ${sample}_Mycobacteriumseqs_noIndel.mpileup";
-	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input ${sample}_Mycobacteriumseqs_noIndel.mpileup --gtf ${dataDir}/mtuberculosis/150423_removeRegions.gtf --output ${sample}_Mycobacteriumseqs_noIndel_remRegs.mpileup";
+	system "$sam mpileup -B -Q 20 -f ${dataDir}/mtuberculosis/MtbNCBIH37Rv.fa $filteredBam > $mpileup1";
+	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/identify-genomic-indel-regions.pl --input $mpileup1 --output $indelGTF";
+	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input $mpileup1 --gtf $indelGTF --output $mpileup2";
+	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input $mpileup2 --gtf ${dataDir}/mtuberculosis/150423_removeRegions.gtf --output $mpileup3";
 #remove all but the final mpileup (.noIndel.remRegs.mpileup)
-	unlink "${sample}_Mycobacteriumseqs.mpileup";
-	unlink "${sample}_Mycobacteriumseqs_noIndel.mpileup";
+	unlink "$mpileup1";
+	unlink "$mpileup2";
 	unlink "$fqOut";
 	unlink "${sample}.kraken.label";
 
 #strand bias filter
 	print STDERR "Processing $sample [generateing VCF]...\n";
-	system "$sam mpileup -B -Q 20 -f ${dataDir}/mtuberculosis/MtbNCBIH37Rv.fa -uv -t DP,DP4,SP $outBam > $outVCF";
+	system "$sam mpileup -B -Q 20 -f ${dataDir}/mtuberculosis/MtbNCBIH37Rv.fa -uv -t DP,DP4,SP $filteredBam > $outVCF";
 	print STDERR "Processing $sample [strand bias filter]...\n";
 	open (VCF, "<", "$outVCF") or die "couldn't open $outVCF: $?\n";
 	#open (SBOUT, ">", "${sample}_SB_positions.txt") or die "couldn't open output file for strand bias positions: $?\n";
@@ -147,8 +152,8 @@ foreach my $file (@files) {
     		next;
     	}
     }
-    open (MPILEUP, "<", "${sample}_Mycobacteriumseqs_noIndel_remRegs.mpileup") or die "couldn't open mpileup for strand bias filtering: $?\n";
-    open (MPOUT, ">>", "${sample}_noI_noR_SB.mpileup") or die "couldn't open file for strand bias output: $?\n";
+    open (MPILEUP, "<", "$mpileup3") or die "couldn't open mpileup for strand bias filtering: $?\n";
+    open (MPOUT, ">>", "$mpileup4") or die "couldn't open file for strand bias output: $?\n";
     while (my $line = <MPILEUP>) {
     	my $position = (split /\t/, $line)[1];
     	if (-e $SBpos{$position}) {
