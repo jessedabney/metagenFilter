@@ -7,6 +7,8 @@ use strict;
 use File::Basename;
 
 my $progDir = "/mnt/PepPop_export/PepPrograms";
+my $krakenDir = "/opt/PepPrograms";
+my $krakenDB = "/home/yudong/DB";
 my $dataDir = "/mnt/PepPop_export/data";
 my $sam = "${progDir}/samtools-1.2/samtools";
 
@@ -38,10 +40,10 @@ foreach my $file (@files) {
 	#use below if inputting compressed fq
 	#system "${progDir}/kraken/kraken -preload --threads 8 --fastq-input --gzip-compressed --db ${progDir}/kraken/DB/ ${fqOut}.gz > ${sample}.kraken";
 	print STDERR "Processing $sample [kraken]...\n";
-	system "${progDir}/kraken/kraken --threads 8 --fastq-input --db /mnt/ramdisk/DB ${fqOut} > ${sample}.kraken";
+	system "${krakenDir}/kraken/kraken --threads 8 --fastq-input --db $krakenDB ${fqOut} > ${sample}.kraken";
 #translate kraken file
 	print STDERR "Processing $sample [kraken translate]...\n";
-	system "${progDir}/kraken/kraken-translate --db /mnt/ramdisk/DB/ ${sample}.kraken > ${sample}.kraken.labels";
+	system "${krakenDir}/kraken/kraken-translate --db $krakenDB ${sample}.kraken > ${sample}.kraken.labels";
 
 #work on .kraken files
 	open (IN, "<", "${sample}.kraken") or die "couldn't open $file: $?\n";
