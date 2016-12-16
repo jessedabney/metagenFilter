@@ -164,6 +164,8 @@ foreach my $file (@files) {
     		print MPOUT "$line"
     	}
     }
+#now call automatePoolSeqDiversityStats.py script
+	system "~/projects/sputum/scripts/metagenFilter/automatePoolSeqDiversityStats.py -p ${sample} -g ~/projects/sputum/scripts/metagenFilter/tbdb_gichrom.gtf"
 
 }
 
