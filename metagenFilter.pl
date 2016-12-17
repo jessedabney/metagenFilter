@@ -129,11 +129,7 @@ foreach my $file (@files) {
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/identify-genomic-indel-regions.pl --input $mpileup1 --output $indelGTF";
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input $mpileup1 --gtf $indelGTF --output $mpileup2";
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input $mpileup2 --gtf ${dataDir}/mtuberculosis/150423_removeRegions.gtf --output $mpileup3";
-#remove all but the final mpileup (.noIndel.remRegs.mpileup)
-	unlink "$mpileup1";
-	unlink "$mpileup2";
-	unlink "$fqOut";
-	unlink "${sample}.kraken.label";
+
 
 #strand bias filter
 	print STDERR "Processing $sample [generateing VCF]...\n";
@@ -167,6 +163,23 @@ foreach my $file (@files) {
 #now call automatePoolSeqDiversityStats.py script
 	system "~/projects/sputum/scripts/metagenFilter/automatePoolSeqDiversityStats.py -p ${sample} -g ~/projects/sputum/scripts/metagenFilter/tbdb_gichrom.gtf"
 
+#remove all but the final mpileup (.noIndel.remRegs.mpileup)
+	unlink "$mpileup1";
+	unlink "$mpileup2";
+	unlink "${mpileup2}.params";
+	unlink "$fqOut";
+	unlink "${sample}.kraken.label";
+	unlink "$filteredBam";
+	unlink "$mpileup3";
+	unlink "${mpileup3}.params";
+	unlink "${sample}_classSeqs.reads";
+	unlink "$indelGTF";
+	unlink "${indelGTF}.params";
+	unlink "${sample}.kraken";
+	unlink "${sample}.kraken.labels";
+	unlink "${sample}_classSeq_names.txt";
+	unlink "${sample}.realn.reads";
+	unlink "$outVCF";
 }
 
 
