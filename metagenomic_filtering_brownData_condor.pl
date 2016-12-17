@@ -102,7 +102,7 @@ foreach my $file (@files) {
 		}
 	}
 #now filter against sequences where only 1 of the pair was assigned
-	open (NAMES, ">>", "${sample}_MTBC_seqNames.txt") or die "couldn't open output for sequence names: $?\n";
+	open (NAMES, ">>", "${sample}_classSeq_names.txt") or die "couldn't open output for sequence names: $?\n";
 	my $numMTBC = 0;
 	foreach my $seqName (keys %seqNames) {
 		if ($seqNames{$seqName} != 2) {
