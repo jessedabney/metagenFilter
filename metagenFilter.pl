@@ -37,7 +37,7 @@ foreach my $file (@files) {
 	chdir "$sample" or die "can't change to directory $sample: $!";
 
 	print STDERR "Processing $sample [bam2fq]...\n";
-	system "$sam bam2fq $file > $fqOut";
+	system "$sam bam2fq ${pwd}/$file > $fqOut";
 	#system "gzip $fqOut"; #can compress here, use other kraken option
 
 #call kraken on fastqs
