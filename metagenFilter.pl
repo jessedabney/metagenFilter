@@ -125,7 +125,7 @@ foreach my $file (@files) {
 
 #now filter the original bam file by sequence names
 	print STDERR "Processing $sample [Picard FilterSamReads]...\n";
-	system "java -Xmx8g -jar ${progDir}/picard-tools-1.138/picard.jar FilterSamReads INPUT=${pwd}/${name} OUTPUT=$filteredBam READ_LIST_FILE=${sample}_MTBC_seqNames.txt FILTER=includeReadList";
+	system "java -Xmx8g -jar ${progDir}/picard-tools-1.138/picard.jar FilterSamReads INPUT=${pwd}/${name} OUTPUT=$filteredBam READ_LIST_FILE=${sample}_classSeq_names.txt FILTER=includeReadList";
 
 #now convert filtered bam to mpileup and do some further filtering on the mpileup
 	print STDERR "Processing $sample [mpileup generation and filtering]...\n";
