@@ -121,7 +121,7 @@ foreach my $file (@files) {
 #now print some stats
 	my $finalMTBC = 2 * $numMTBC;
 	#print STDERR "Single end seqs: $diff\n";
-	print STATS "$sample\t$totalSeqs\t$numClass\t$totalMTBC\t$finalMTBC\n";
+	print STATS "$sample\t$totalSeqs\t$numClass\t$totalMTBC\t$finalMTBC\n" or die "couldn't print stats...\n";
 
 #now filter the original bam file by sequence names
 	print STDERR "Processing $sample [Picard FilterSamReads]...\n";
