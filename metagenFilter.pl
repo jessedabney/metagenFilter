@@ -125,7 +125,7 @@ foreach my $file (@files) {
 
 #now filter the original bam file by sequence names
 	print STDERR "Processing $sample [Picard FilterSamReads]...\n";
-	system "java -Xmx8g -jar ${progDir}/picard-tools-1.138/picard.jar FilterSamReads INPUT=${pwd}${file} OUTPUT=$filteredBam READ_LIST_FILE=${sample}_MTBC_seqNames.txt FILTER=includeReadList";
+	system "java -Xmx8g -jar ${progDir}/picard-tools-1.138/picard.jar FilterSamReads INPUT=${pwd}${name} OUTPUT=$filteredBam READ_LIST_FILE=${sample}_MTBC_seqNames.txt FILTER=includeReadList";
 
 #now convert filtered bam to mpileup and do some further filtering on the mpileup
 	print STDERR "Processing $sample [mpileup generation and filtering]...\n";
@@ -166,6 +166,7 @@ foreach my $file (@files) {
     	}
     }
 #now call automatePoolSeqDiversityStats.py script
+	print STDERR "Processing $sample [popoolation]...\n";
 	system "~/projects/sputum/scripts/metagenFilter/automatePoolSeqDiversityStats.py -p ${sample} -g ~/projects/sputum/scripts/metagenFilter/tbdb_gichrom.gtf";
 
 #remove all but the final mpileup (.noIndel.remRegs.mpileup)
@@ -186,6 +187,7 @@ foreach my $file (@files) {
 	unlink "${sample}.realn.reads";
 	unlink "$outVCF";
 #get averages of subsample
+	print STDERR "Processing $sample [getting subsample averages]...\n";
 	system "~/projects/sputum/scripts/metagenFilter/get_subsampleAverage.pl -output ${sample}_subAvg.pi ${sample}*rand*n10K.pi";
 	system "~/projects/sputum/scripts/metagenFilter/get_subsampleAverage.pl -output ${sample}_subAvg.theta ${sample}*rand*n10K.theta";
 	system "~/projects/sputum/scripts/metagenFilter/get_subsampleAverage.pl -output ${sample}_subAvg.td ${sample}*rand*n10K.td";
