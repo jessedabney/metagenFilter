@@ -5,7 +5,9 @@
 
 use strict;
 use File::Basename;
+use Cwd;
 
+my $pwd = cwd();
 my $progDir = "/mnt/PepPop_export/PepPrograms";
 my $krakenDir = "/opt/PepPrograms";
 my $krakenDB = "/home/yudong/DB";
@@ -30,6 +32,9 @@ foreach my $file (@files) {
 	my $mpileup2 = "${sample}_classSeqs_noIndel.mpileup";
 	my $mpileup3 = "${sample}_classSeqs_noIndel_remRegs.mpileup";
 	my $mpileup4 = "${sample}_classSeqs_noIndel_remRegs_noSB.mpileup";
+
+	mkdir "$sample", 0755 or warn "couldn't make directory $sample: $!";
+	chdir "$sample" or die "can't change to directory $sample: $!";
 
 	print STDERR "Processing $sample [bam2fq]...\n";
 	system "$sam bam2fq $file > $fqOut";
@@ -161,7 +166,7 @@ foreach my $file (@files) {
     	}
     }
 #now call automatePoolSeqDiversityStats.py script
-	system "~/projects/sputum/scripts/metagenFilter/automatePoolSeqDiversityStats.py -p ${sample} -g ~/projects/sputum/scripts/metagenFilter/tbdb_gichrom.gtf"
+	system "~/projects/sputum/scripts/metagenFilter/automatePoolSeqDiversityStats.py -p ${sample} -g ~/projects/sputum/scripts/metagenFilter/tbdb_gichrom.gtf";
 
 #remove all but the final mpileup (.noIndel.remRegs.mpileup)
 	unlink "$mpileup1";
@@ -180,6 +185,13 @@ foreach my $file (@files) {
 	unlink "${sample}_classSeq_names.txt";
 	unlink "${sample}.realn.reads";
 	unlink "$outVCF";
+#get averages of subsample
+	system "~/projects/sputum/scripts/metagenFilter/get_subsampleAverage.pl -output ${sample}_subAvg.pi ${sample}*rand*n10K.pi";
+	system "~/projects/sputum/scripts/metagenFilter/get_subsampleAverage.pl -output ${sample}_subAvg.theta ${sample}*rand*n10K.theta";
+	system "~/projects/sputum/scripts/metagenFilter/get_subsampleAverage.pl -output ${sample}_subAvg.td ${sample}*rand*n10K.td";
+	system "~/projects/sputum/scripts/metagenFilter/get_subsampleAverage_genes.pl -output ${sample}_subAvg_genes.pi ${sample}*rand*gene.pi";
+	system "~/projects/sputum/scripts/metagenFilter/get_subsampleAverage_genes.pl -output ${sample}_subAvg_genes.theta ${sample}*rand*gene.theta";
+	chdir "$pwd";
 }
 
 
