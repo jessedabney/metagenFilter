@@ -6,6 +6,8 @@
 use strict;
 use File::Basename;
 use Cwd;
+use Getopt::Long;
+
 
 my $pwd = cwd();
 my $progDir = "/mnt/PepPop_export/PepPrograms";
@@ -13,8 +15,19 @@ my $krakenDir = "/opt/PepPrograms";
 my $krakenDB = "/home/yudong/DB";
 my $dataDir = "/mnt/PepPop_export/data";
 my $sam = "${progDir}/samtools-1.2/samtools";
+my $reference = "";
+my $help;
+
+GetOptions ( "reference=s" => \$reference,
+			"help" => \$help);
+
+
 
 my @files = @ARGV; #list of bam files
+
+&help unless scalar @files > 0;
+&help if $help;
+
 open (STATS, ">>", "kraken_stats.txt") or die "couldn't open file for stats output: $?\n";
 print STATS "sample\ttotalSeqs\tnumberClassified\ttotalMTBC\tfinalMTBC\n";
 
@@ -130,7 +143,7 @@ foreach my $file (@files) {
 #now convert filtered bam to mpileup and do some further filtering on the mpileup
 	print STDERR "Processing $sample [mpileup generation and filtering]...\n";
 	#open (INBAM, "<", "${sample}_MTBCseqs.bam") or die "couldn't open BAM to generate mpileup: $?\n";
-	system "$sam mpileup -B -Q 20 -f ${dataDir}/mtuberculosis/MtbNCBIH37Rv.fa $filteredBam > $mpileup1";
+	system "$sam mpileup -B -Q 20 -f $reference $filteredBam > $mpileup1";
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/identify-genomic-indel-regions.pl --input $mpileup1 --output $indelGTF";
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input $mpileup1 --gtf $indelGTF --output $mpileup2";
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input $mpileup2 --gtf ${dataDir}/mtuberculosis/150423_removeRegions.gtf --output $mpileup3";
@@ -138,7 +151,7 @@ foreach my $file (@files) {
 
 #strand bias filter
 	print STDERR "Processing $sample [generateing VCF]...\n";
-	system "$sam mpileup -B -Q 20 -f ${dataDir}/mtuberculosis/MtbNCBIH37Rv.fa -uv -t DP,DP4,SP $filteredBam > $outVCF";
+	system "$sam mpileup -B -Q 20 -f $reference -uv -t DP,DP4,SP $filteredBam > $outVCF";
 	print STDERR "Processing $sample [strand bias filter]...\n";
 	open (VCF, "<", "$outVCF") or die "couldn't open $outVCF: $?\n";
 	#open (SBOUT, ">", "${sample}_SB_positions.txt") or die "couldn't open output file for strand bias positions: $?\n";
@@ -196,5 +209,23 @@ foreach my $file (@files) {
 	chdir "$pwd";
 }
 
+sub help {
+    print"
+[usage]
+./metagenFilter.pl [-options] <bam1> <bam2> ...
 
+[description]
+This script performs various filtering on aligned sequences in a bam file, namely running sequences through Kraken and kicking out sequences that aren't classified to a specific taxon. After filtering, it generates an mpileup and runs this through PoPoolation.
+
+[output files]
+kraken_stats.txt             contains some stats on the number of classified sequences at various steps.
+prefix_classSeqs_noIndel_remRegs_noSB.mpileup      final filtered mpileup. This file is fed to PoPoolation.
+prefix_rand[0..9]  various subsampled PoPoolation output files
+prefix_subAvg	various genomewide averages calculated from all subsampled files
+
+[options]
+-reference      specify a reference in fasta format
+";
+exit;
+}
 
