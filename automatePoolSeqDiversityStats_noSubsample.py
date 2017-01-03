@@ -87,27 +87,27 @@ def SubSample(i):
 
 def pi():
     call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/Variance-sliding.pl --measure pi --pool-size 10000 --fastq-type sanger --min-count 2 --min-covered-fraction 0.5 --window-size 100000 --step-size 10000 --input {0}_classSeqs_noIndel_remRegs_noSB.mpileup --output {0}_noSubsample_w100K_n10K.pi --snp-output {0}_noSubsample.snps".format(args.prefix))
-    print("executing pi calculation on subsample {0}".format(i))
+    print("executing pi calculation")
 
 def theta():
     call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/Variance-sliding.pl --measure theta --pool-size 10000 --fastq-type sanger --min-count 2 --min-covered-fraction 0.5 --window-size 100000 --step-size 10000 --input {0}_classSeqs_noIndel_remRegs_noSB.mpileup --output {0}_noSubsample_w100K_n10K.theta".format(args.prefix))
-    print("executing theta calculation on subsample {0}".format(i))
+    print("executing theta calculation")
 
 def td():
     call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/Variance-sliding.pl --measure D --pool-size 10000 --fastq-type sanger --min-count 2 --min-covered-fraction 0.5 --window-size 100000 --step-size 10000 --input {0}_classSeqs_noIndel_remRegs_noSB.mpileup --output {0}_noSubsample_w100K_n10K.td ".format(args.prefix))
-    print("executing td calculation on subsample {0}".format(i))
+    print("executing td calculation on subsample {0}")
 
 def gene_pi():
     call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/Variance-at-position.pl --measure pi --pool-size 10000 --fastq-type sanger --min-count 2 --min-covered-fraction 0.5 --pileup {0}_classSeqs_noIndel_remRegs_noSB.mpileup --output {0}_noSubsample_gene.pi --snp-output {0}_noSubsample.gene.snps --gtf {1}".format(args.prefix, args.gtf))
-    print("executing pi gene-wise calculation on subsample {0}".format(i))
+    print("executing pi gene-wise calculation on subsample {0}")
 
 def gene_theta():
     call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/Variance-at-position.pl --measure theta --pool-size 10000 --fastq-type sanger --min-count 2 --min-covered-fraction 0.5 --pileup {0}_classSeqs_noIndel_remRegs_noSB.mpileup --output {0}_noSubsample_gene.theta --gtf {1}".format(args.prefix, args.gtf))
-    print("executing theta gene-wise calculation on subsample {0}".format(i))
+    print("executing theta gene-wise calculation on subsample {0}")
 
 def syn_nonsyn():
     call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/Variance-at-position.pl --measure pi --pool-size 10000 --fastq-type sanger --min-count 2 --min-covered-fraction 0.5 --codon-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/codon-table.txt --nonsyn-length-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/nsl_p1.txt --pileup {0}_classSeqs_noIndel_remRegs_noSB.mpileup --output {0}_noSubsample_syn-nonsyn.pi --snp-output {0}_noSubsample_syn-nonsyn.snps --gtf {1}".format(args.prefix, args.gtf))
-    print("executing pi syn-nonsyn calculation on subsample {0}".format(i))
+    print("executing pi syn-nonsyn calculation on subsample {0}")
 
 kvmap= {'prefix':args.prefix}
 
