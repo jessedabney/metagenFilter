@@ -17,8 +17,10 @@ my $dataDir = "/mnt/PepPop_export/data";
 my $sam = "${progDir}/samtools-1.2/samtools";
 my $reference = "";
 my $help;
+my $gtf;
 
 GetOptions ( "reference=s" => \$reference,
+			"gtf=s" => \$gtf;
 			"help" => \$help);
 
 
@@ -180,7 +182,7 @@ foreach my $file (@files) {
     }
 #now call automatePoolSeqDiversityStats.py script
 	print STDERR "Processing $sample [popoolation]...\n";
-	system "~/projects/sputum/scripts/metagenFilter/automatePoolSeqDiversityStats.py -p ${sample} -g ~/projects/sputum/scripts/metagenFilter/tbdb_gichrom.gtf";
+	system "~/projects/sputum/scripts/metagenFilter/automatePoolSeqDiversityStats.py -p ${sample} -g ${gtf}";
 
 #remove all but the final mpileup (.noIndel.remRegs.mpileup)
 	unlink "$mpileup1";
@@ -225,6 +227,7 @@ prefix_subAvg	various genomewide averages calculated from all subsampled files
 
 [options]
 -reference      specify a reference in fasta format
+-gtf 			provide a gtf file containing CDS information
 ";
 exit;
 }
