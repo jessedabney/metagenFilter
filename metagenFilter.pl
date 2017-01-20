@@ -20,7 +20,7 @@ my $help;
 my $gtf;
 
 GetOptions ( "reference=s" => \$reference,
-			"gtf=s" => \$gtf;
+			"gtf=s" => \$gtf,
 			"help" => \$help);
 
 
