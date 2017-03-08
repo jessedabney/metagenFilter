@@ -17,7 +17,7 @@ foreach my $file (@files) {
 	while (my $line = <READ>) {
 		my ($gene, $snps, $cov, $value) = split /\t/, $line;
 		if ($value =~ /na/){
-			$value = 0;
+			$value = -1;
 		}
 		$data{$gene}{"snps"} += $snps;
 		$data{$gene}{"cov"} += $cov;
@@ -27,7 +27,7 @@ foreach my $file (@files) {
 }
 close READ;
 
-open AVERAGE, ">>${output}" or die "couldn't open file for output, $?\n";
+open AVERAGE, ">${output}" or die "couldn't open file for output, $?\n";
 foreach my $gene (sort keys %data) {
 	print AVERAGE join ("\t",
 		$gene, 
