@@ -18,7 +18,7 @@ foreach my $file (@files) {
 	while (my $line = <READ>) {
 		my ($refID, $position, $snps, $cov, $value) = split /\t/, $line;
 		if ($value =~ /na/){
-			$value = -1;
+			$value = -10;
 		}
 		$refName = $refID;
 		$data{$position}{"snps"} += $snps;
