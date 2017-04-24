@@ -105,9 +105,14 @@ def gene_theta(i):
     call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/Variance-at-position.pl --measure theta --pool-size 10000 --fastq-type sanger --min-count 2 --min-covered-fraction 0.5 --pileup {0}_rand{1}.mpileup --output {0}_rand{1}_gene.theta --gtf {2}".format(args.prefix, i, args.gtf))
     print("executing theta gene-wise calculation on subsample {0}".format(i))
 
-def syn_nonsyn(i):
-    call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/Syn-nonsyn-at-position.pl --measure pi --pool-size 10000 --fastq-type sanger --min-count 2  --codon-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/codon-table.txt --nonsyn-length-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/nsl_p1.txt --pileup {0}_rand{1}.mpileup --output {0}_rand{1}_syn-nonsyn.pi --snp-output {0}_rand{1}_syn-nonsyn.snps --gtf {2}".format(args.prefix, i, args.gtf))
+def syn_nonsyn_pi(i):
+    call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/Syn-nonsyn-at-position.pl --measure pi --pool-size 10000 --fastq-type sanger --min-count 2  --codon-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/codon-table.txt --nonsyn-length-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/nsl_p1.txt --pileup {0}_rand{1}.mpileup --output {0}_rand{1}_syn-nonsyn.pi --snp-output {0}_rand{1}_syn-nonsyn_pi.snps --gtf {2}".format(args.prefix, i, args.gtf))
     print("executing pi syn-nonsyn calculation on subsample {0}".format(i))
+
+def syn_nonsyn_theta(i):
+    call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/Syn-nonsyn-at-position.pl --measure theta --pool-size 10000 --fastq-type sanger --min-count 2  --codon-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/codon-table.txt --nonsyn-length-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/nsl_p1.txt --pileup {0}_rand{1}.mpileup --output {0}_rand{1}_syn-nonsyn.theta --snp-output {0}_rand{1}_syn-nonsyn_theta.snps --gtf {2}".format(args.prefix, i, args.gtf))
+    print("executing theta syn-nonsyn calculation on subsample {0}".format(i))
+
 
 kvmap= {'prefix':args.prefix}
 
