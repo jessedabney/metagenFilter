@@ -7,7 +7,7 @@ use strict;
 use File::Basename;
 use Cwd;
 use Getopt::Long;
-
+use DateTime;
 
 ###############################################################################################
 # These are pointers to relevant directories. Should be looked at and changed before running  #
@@ -25,6 +25,8 @@ my $reference = "";
 my $help;
 my $gtf;
 my $remove;
+my $dt = DateTime->now;
+my $ymd = $dt->ymd;
 
 GetOptions ( "reference=s" => \$reference,
 			"gtf=s" => \$gtf,
@@ -38,7 +40,7 @@ my @files = @ARGV; #list of bam files
 &help unless scalar @files > 0;
 &help if $help;
 
-open (STATS, ">>", "kraken_stats.txt") or die "couldn't open file for stats output: $?\n";
+open (STATS, ">>", "kraken_stats_${ymd}.txt") or die "couldn't open file for stats output: $?\n";
 print STATS "sample\ttotalSeqs\tnumberClassified\ttotalMTBC\tfinalMTBC\n";
 
 foreach my $file (@files) {
