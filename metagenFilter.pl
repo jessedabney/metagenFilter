@@ -18,9 +18,11 @@ my $sam = "${progDir}/samtools-1.2/samtools";
 my $reference = "";
 my $help;
 my $gtf;
+my $remove;
 
 GetOptions ( "reference=s" => \$reference,
 			"gtf=s" => \$gtf,
+			"remove=s" => $remove;
 			"help" => \$help);
 
 
@@ -148,7 +150,7 @@ foreach my $file (@files) {
 	system "$sam mpileup -B -Q 20 -f $reference $filteredBam > $mpileup1";
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/identify-genomic-indel-regions.pl --input $mpileup1 --output $indelGTF";
 	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input $mpileup1 --gtf $indelGTF --output $mpileup2";
-	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input $mpileup2 --gtf ${dataDir}/mtuberculosis/150423_removeRegions.gtf --output $mpileup3";
+	system "perl ${progDir}/popoolation_1.2.2/basic-pipeline/filter-pileup-by-gtf.pl --input $mpileup2 --gtf $remove --output $mpileup3";
 
 
 #strand bias filter
