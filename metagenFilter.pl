@@ -35,7 +35,7 @@ GetOptions ( "reference=s" => \$reference,
 
 
 
-my @files = @ARGV; #list of bam files
+my @files = @ARGV; #list of bam files. sample name should be first with "." separater. 
 
 &help unless scalar @files > 0;
 &help if $help;
