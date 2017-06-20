@@ -30,7 +30,7 @@ my $ymd = $dt->ymd;
 
 GetOptions ( "reference=s" => \$reference,
 			"gtf=s" => \$gtf,
-			"remove=s" => $remove,
+			"remove=s" => \$remove,
 			"help" => \$help);
 
 
