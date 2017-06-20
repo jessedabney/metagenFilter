@@ -9,12 +9,18 @@ use Cwd;
 use Getopt::Long;
 
 
-my $pwd = cwd();
-my $progDir = "/mnt/PepPop_export/PepPrograms";
+###############################################################################################
+# These are pointers to relevant directories. Should be looked at and changed before running  #
+###############################################################################################
+
+my $progDir = "/opt/PepPrograms";
 my $krakenDir = "/opt/PepPrograms";
 my $krakenDB = "/home/yudong/DB";
-my $dataDir = "/mnt/PepPop_export/data";
+my $dataDir = "/opt/data";
 my $sam = "${progDir}/samtools-1.2/samtools";
+
+
+my $pwd = cwd();
 my $reference = "";
 my $help;
 my $gtf;
@@ -230,6 +236,7 @@ prefix_subAvg	various genomewide averages calculated from all subsampled files
 [options]
 -reference      specify a reference in fasta format
 -gtf 			provide a gtf file containing CDS information
+-remove			gtf file of regions that should be removed
 ";
 exit;
 }
