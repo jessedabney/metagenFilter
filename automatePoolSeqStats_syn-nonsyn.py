@@ -113,6 +113,10 @@ def syn_nonsyn_theta(i):
     call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/Syn-nonsyn-at-position.pl --measure theta --pool-size 10000 --fastq-type sanger --min-count 2  --codon-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/codon-table.txt --nonsyn-length-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/nsl_p1.txt --pileup {0}_rand{1}.mpileup --output {0}_rand{1}_syn-nonsyn.theta --snp-output {0}_rand{1}_syn-nonsyn_theta.snps --gtf {2}".format(args.prefix, i, args.gtf))
     print("executing theta syn-nonsyn calculation on subsample {0}".format(i))
 
+def syn_nonsyn_td(i):
+    call_with_log("perl /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/Syn-nonsyn-at-position.pl --measure d --pool-size 10000 --fastq-type sanger --min-count 2  --codon-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/codon-table.txt --nonsyn-length-table /mnt/PepPop_export/PepPrograms/popoolation_1.2.2/syn-nonsyn/nsl_p1.txt --pileup {0}_rand{1}.mpileup --output {0}_rand{1}_syn-nonsyn.td --snp-output {0}_rand{1}_syn-nonsyn_td.snps --gtf {2}".format(args.prefix, i, args.gtf))
+    print("executing tajimas d syn-nonsyn calculation on subsample {0}".format(i))
+
 
 kvmap= {'prefix':args.prefix}
 
@@ -124,4 +128,6 @@ for i in range(10) :
 #    td(i)
     #gene_pi(i)
     #gene_theta(i)
-    syn_nonsyn(i)
+    syn_nonsyn_pi(i)
+    syn_nonsyn_theta(i)
+    syn_nonsyn_td(i)
