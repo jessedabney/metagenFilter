@@ -69,7 +69,7 @@ foreach my $sample (sort keys %overview) {
 			if ($sample =~ /^E/) {
 				$file = "${sample}_subAvg_genes.${stat}";
 			} elsif ($sample =~ /^sput/) {
-				$file = ${sample}_subAvg_genes_withNA.${stat};
+				$file = "${sample}_subAvg_genes_withNA.${stat}";
 			} else {
 				die "weird name in $sample\n";
 			}
