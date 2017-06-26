@@ -50,7 +50,7 @@ my @mbovis_genes = nsort @bovisgenes;
 
 
 #open(OUT, ">>", "/home/jdabney/projects/sputum/analysis/genes/$outFile") or die "Couldn't open $outFile for printing: $!\n";
-open (OUT2, ">>", "/home/jdabney/projects/sputum/analysis/genes/$outFile2");
+open (OUT2, ">", "/home/jdabney/projects/sputum/analysis/wisc_data/$outFile2");
 
 #find, open and read in each subsample average file.
 print STDERR "processing subsample average files...\n";
