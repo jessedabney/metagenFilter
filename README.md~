@@ -22,10 +22,4 @@
     * average values across subsamples of all values.
 
 
-3. make_windows_table.pl Requirements: need to point it at sample overview file and subsample averages.
-
-  * make a table with data for all samples, including metadata and stats based on windows analysis
-
-4. make_gene_table.pl Requirements: need to point at sample overview, subsample averages and list of gene names
-
-  * make a table with data for all samples, including metadata and stats for each gene. 
+3. 
