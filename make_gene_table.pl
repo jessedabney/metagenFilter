@@ -81,7 +81,7 @@ foreach my $sample (sort keys %overview) {
 				$data{$gene} = $val;
 			}
 			if ($n < 1) {
-				my $header = "sample\tscore\tpatient\tsource\tcapture\tstat\t";
+				my $header = "sample\tpatient\tsource\tcapture\tstat\t";
 				#print OUT "$header", join("\t", @mtb_genes), "\n";
 				print OUT2 "$header", join("\t", @mbovis_genes), "\n";	
 				$n++;
